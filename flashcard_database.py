@@ -28,3 +28,16 @@ def uploadCard(card):
     cursor.execute(f"INSERT INTO myCards VALUES {atts}")
     conn.commit()
     conn.close()
+
+def downloadCards():
+    conn = sqlite3.connect('flashcards.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+SELECT *
+FROM myCards
+ORDER BY last_seen;
+''') #oldest first
+    cards = cursor.fetchall()
+    conn.close()
+    return cards
+# cards is an array of tuples. each card is a row, and each field is an entry in the tuple
