@@ -16,9 +16,12 @@ class Wall:
         self.y = YPos
         self.width = Width
         self.height = Height
+        self.type = "wall"
+
     def draw(self, surface):
-        pygame.draw.rect(surface, red, pygame.Rect(self.x, self.y, self.width, self.height))
-    def update(self):
+        pygame.draw.rect(surface, black, pygame.Rect(self.x, self.y, self.width, self.height))
+
+    def update(self, gameObjects):
         pass
 
 class Ball: # can be used  for projectiles later 
@@ -31,15 +34,16 @@ class Ball: # can be used  for projectiles later
         self.type = "ball"
 
     def draw(self, surface):
-        pygame.draw.circle(surface, black, (self.x, self.y), self.radius)
+        pygame.draw.circle(surface, red, (self.x, self.y), self.radius)
 
-    def update(self):
+    def update(self, gameObjects):
         self.x += self.dx
         self.y += self.dy
         if (self.x <= 0 or self.x >= resolution[0]):
             self.dx *= -1
         if (self.y <= 0 or self.y >= resolution[1]):
             self.dy *= -1
+        
 
 class Player: # a circle controlled by the player
     def __init__(self, rad = 15, xx = 0, yy = 0):
@@ -50,8 +54,17 @@ class Player: # a circle controlled by the player
 
     def draw(self, surface):
         pygame.draw.circle(surface, green, (self.x, self.y), self.radius)
+    
+    def wallcollision(self, gameObj):
+        closestX = gameObj.x if (self.x < gameObj.x) else (gameObj.x+gameObj.width if self.x > gameObj.x+gameObj.width else self.x)
+        closestY = gameObj.y if self.y < gameObj.y else (gameObj.y+gameObj.height if self.y > gameObj.y+gameObj.height else self.y)
+        
+        dx = closestX - self.x
+        dy = closestY - self.y
 
-    def update(self):
+        return ( dx * dx + dy * dy ) <= self.radius * self.radius
+
+    def update(self, gameObjects):
         vel = 1.5
         keys = pygame.key.get_pressed()
         
@@ -67,10 +80,20 @@ class Player: # a circle controlled by the player
         if self.x >= resolution[0]: self.x = resolution[0]
         if self.y <= 0: self.y = 0
         if self.y >= resolution[1]: self.y = resolution[1]
-        if (400 - self.x)**2 + (300 - self.y)**2 <= (25 + self.radius)**2: 
-            global levels
+        global ends, levels, starts
+        end = ends[int(2*levels - 2)]
+        if (end[0] - self.x)**2 + (end[1] - self.y)**2 <= (end[2] + self.radius)**2: 
             levels += 0.5
             #pygame.quit()
+        for gameObj in gameObjects:
+            match gameObj.type:
+                case "ball":
+                    if (gameObj.x - self.x)**2 + (gameObj.y - self.y)**2 <= (gameObj.radius + self.radius)**2:
+                        self.x, self.y = starts[int(2*levels - 2)]
+                case "wall":
+                    if self.wallcollision(gameObj):
+                        self.x, self.y = starts[int(2*levels - 2)]
+                case _: pass
         #cord = pygame.mouse.get_pos()
         #self.x = cord[0]
         #self.y = cord[1]
@@ -84,7 +107,7 @@ class game(): # main game loop
         self.gameObjects = []
         self.gameObjects.append(Player(20, 100, 150))
         self.gameObjects.append(Ball())
-        self.gameObjects.append(Ball(100))
+        self.gameObjects.append(Ball(250))
     
     def newlevel(self, levels, objects):
         #screen.fill(white)
@@ -102,7 +125,7 @@ class game(): # main game loop
             self.handleEvents()
             currentlevel = 1
             for gameObj in self.gameObjects:
-                gameObj.update()
+                gameObj.update(self.gameObjects)
 
             self.screen.fill(white)
 
@@ -118,5 +141,7 @@ class game(): # main game loop
             pygame.display.flip()
 
 
-objects = [[Player(20, 100, 150),Wall(100, 75, 50, 200)],[Player(20, 100, 150),Ball(200)],[Player(20, 100, 150)],[]]
+objects = [[Player(20, 100, 150),Wall(0, 0, 50, 200)],[Player(20, 100, 150),Ball(200)],[Player(20, 100, 150)],[]]
+ends = [(400,300,25),(0,0,50),(200,150,10),(400,300,50)] # (x,y,distance)
+starts = [(100,150),(100,150),(100,150)]
 game().run()
