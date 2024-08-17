@@ -22,7 +22,7 @@ conn.close()
 
     
 def uploadCard(card):
-    atts = card.get_atts()
+    atts = card.get_atts_for_db()
     conn = sqlite3.connect('flashcards.db')
     cursor = conn.cursor()
     cursor.execute(f"INSERT INTO myCards VALUES {atts}")

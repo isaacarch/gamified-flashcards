@@ -4,6 +4,7 @@ import random
 
 flashcards = getCards()
 
+# rounds time to nearest 5 mins
 def roundTime(time):
     timeString = str(time)[0:16]
     offsetMins = 0
@@ -29,12 +30,9 @@ def whenToStudy(card):
     (score, last_seen) = card.get_score_time()
     return last_seen + timedelta(minutes = score*10)
 
-
-
 # sort cards by time to study
 def sortCards():
     flashcards.sort(key=lambda x: (roundTime(whenToStudy(x)), random.random()))
 
-sortCards()
-for card in flashcards:
-    print(card)
+def nextCard():
+    return flashcards.pop(0)
