@@ -105,9 +105,19 @@ class game(): # main game loop
         self.screen = pygame.display.set_mode(resolution)
         self.clock = pygame.time.Clock()
         self.gameObjects = []
-        self.gameObjects.append(Player(20, 100, 150))
-        self.gameObjects.append(Ball())
-        self.gameObjects.append(Ball(250))
+        self.gameObjects.append(Player(20, 30, 30))
+        self.gameObjects.append(Wall(60, 0, 30, 180))
+        self.gameObjects.append(Wall(60, 170, 100, 30))
+        self.gameObjects.append(Wall(230, 220, 100, 30))
+        self.gameObjects.append(Wall(140, 50, 30, 150))
+        self.gameObjects.append(Wall(310, 130, 100, 30))
+        self.gameObjects.append(Wall(230, 200, 30, 150))
+        self.gameObjects.append(Wall(60, 170, 30, 80))
+        self.gameObjects.append(Wall(140, 260, 30, 150))
+        self.gameObjects.append(Wall(230, 50, 30, 180))
+        self.gameObjects.append(Wall(230, 50, 100, 30))
+        #self.gameObjects.append(Ball())
+        #self.gameObjects.append(Ball(250))
     
     def newlevel(self, levels, objects):
         #screen.fill(white)
@@ -141,7 +151,7 @@ class game(): # main game loop
             pygame.display.flip()
 
 
-objects = [[Player(20, 100, 150),Wall(0, 0, 50, 200)],[Player(20, 100, 150),Ball(200)],[Player(20, 100, 150)],[]]
+objects = [[Player(20, 30, 30),Wall(70, 0, 200, 30)],[Player(20, 100, 150),Ball(200)],[Player(20, 100, 150)],[]]
 ends = [(400,300,25),(0,0,50),(200,150,10),(400,300,50)] # (x,y,distance)
-starts = [(100,150),(100,150),(100,150)]
+starts = [(30,30),(100,150),(100,150)]
 game().run()
