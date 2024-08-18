@@ -226,23 +226,36 @@ class game(): # main game loop
         # maze 1
         self.gameObjects.append(Player(20, 30, 30))
         self.gameObjects.append(Wall(60, 0, 30, 180))
-        #self.gameObjects.append(Wall(60, 170, 100, 30))
-        #self.gameObjects.append(Wall(230, 220, 100, 30))
-        #self.gameObjects.append(Wall(140, 50, 30, 150))
-        #self.gameObjects.append(Wall(310, 130, 100, 30))
-        #self.gameObjects.append(Wall(230, 200, 30, 150))
-        #self.gameObjects.append(Wall(60, 170, 30, 80))
-        #self.gameObjects.append(Wall(140, 260, 30, 150))
-        #self.gameObjects.append(Wall(230, 50, 30, 180))
-        #self.gameObjects.append(Wall(230, 50, 100, 30))
+        self.gameObjects.append(Wall(60, 170, 100, 30))
+        self.gameObjects.append(Wall(230, 220, 100, 30))
+        self.gameObjects.append(Wall(140, 50, 30, 150))
+        self.gameObjects.append(Wall(310, 130, 100, 30))
+        self.gameObjects.append(Wall(230, 200, 30, 150))
+        self.gameObjects.append(Wall(60, 170, 30, 80))
+        self.gameObjects.append(Wall(140, 260, 30, 150))
+        self.gameObjects.append(Wall(230, 50, 30, 180))
+        self.gameObjects.append(Wall(230, 50, 100, 30))
         #self.gameObjects.append(Ball())
         #self.gameObjects.append(Ball(250))
     
     def newlevel(self, levels, objects):
         #screen.fill(white)
         self.gameObjects = []
-        for gameObj in objects[int(levels*2 - 3)]:
-            self.gameObjects.append(gameObj)
+        if levels == 1:
+            self.gameObjects.append(Player(20, 30, 30))
+            self.gameObjects.append(Wall(60, 0, 30, 180))
+            self.gameObjects.append(Wall(60, 170, 100, 30))
+            self.gameObjects.append(Wall(230, 220, 100, 30))
+            self.gameObjects.append(Wall(140, 50, 30, 150))
+            self.gameObjects.append(Wall(310, 130, 100, 30))
+            self.gameObjects.append(Wall(230, 200, 30, 150))
+            self.gameObjects.append(Wall(60, 170, 30, 80))
+            self.gameObjects.append(Wall(140, 260, 30, 150))
+            self.gameObjects.append(Wall(230, 50, 30, 180))
+            self.gameObjects.append(Wall(230, 50, 100, 30))
+        else:
+            for gameObj in objects[int(levels*2 - 3)]:
+                self.gameObjects.append(gameObj)
 
     def handleEvents(self):
         for event in pygame.event.get():
@@ -266,17 +279,22 @@ class game(): # main game loop
                 currentlevel += 0.5
                 self.newlevel(levels, objects)
             if (levels % 1 == 0.5):
+                end = pygame.time.get_ticks() + 1500
                 match self.battle():
                     case -1: 
-                        self.pygameText("You died :(", 100,150)
+                        while pygame.time.get_ticks() < end:
+                            self.pygameText("You died :(", 100,150)
                         levels -= 0.5
                     case 0: 
-                        self.pygameText("It's a tie? Make more flashcards!", 100,150)
+                        while pygame.time.get_ticks() < end:
+                            self.pygameText("It's a tie? Make more flashcards!", 100,150)
                         levels -= 0.5
                     case 1: 
-                        self.pygameText("You win! :)", 100,150)
+                        while pygame.time.get_ticks() < end:
+                            self.pygameText("You win! :)", 100,150)
                         levels += 0.5
                     case _: pass
+                self.newlevel(levels, objects)
 
             self.clock.tick(60)
             pygame.display.flip()
