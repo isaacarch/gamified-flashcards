@@ -12,7 +12,6 @@ levels = 1
 screen = pygame.display.set_mode(resolution)
 
 # from flashcard_algorithm import startDeck, testCard, deckEmpty
-
 # need to get cards with fixed game size
 
 def testCard():
@@ -279,7 +278,7 @@ class game(): # main game loop
         # maze 1
         self.gameObjects.append(Player(20, 30, 30))
         self.gameObjects.append(Wall(60, 0, 30, 180))
-        self.gameObjects.append(Wall(60, 170, 100, 30))
+        '''self.gameObjects.append(Wall(60, 170, 100, 30))
         self.gameObjects.append(Wall(230, 220, 100, 30))
         self.gameObjects.append(Wall(140, 50, 30, 150))
         self.gameObjects.append(Wall(310, 130, 100, 30))
@@ -287,7 +286,7 @@ class game(): # main game loop
         self.gameObjects.append(Wall(60, 170, 30, 80))
         self.gameObjects.append(Wall(140, 260, 30, 150))
         self.gameObjects.append(Wall(230, 50, 30, 180))
-        self.gameObjects.append(Wall(230, 50, 100, 30))
+        self.gameObjects.append(Wall(230, 50, 100, 30))'''
         #self.gameObjects.append(Ball())
         #self.gameObjects.append(Ball(250))
     
@@ -337,19 +336,19 @@ class game(): # main game loop
                 match self.battle():
                     case -1: 
                         while pygame.time.get_ticks() < end:
-                            self.pygameText("You died :(", 100,150)
+                            game.pygameText("You died :(", 100,150)
                         levels -= 0.5
                     case 0: 
                         while pygame.time.get_ticks() < end:
-                            self.pygameText("It's a tie?", 100,150, " Make more flashcards!", 100, 250)
-                        levels -= 0.5
+                            game.pygameText("It's a tie?", 100,150, " Make more flashcards!", 100, 250)
+                        levels += 0.5
                     case 1: 
                         while pygame.time.get_ticks() < end:
-                            self.pygameText("You win! :)", 100,150)
+                            game.pygameText("You win! :)", 100,150)
                         levels += 0.5
                     case _: pass
                 self.newlevel(levels, objects)
-
+            
             self.clock.tick(60)
             pygame.display.flip()
     
