@@ -15,28 +15,29 @@ class entity:
     def isDead(self):
         return self.currentHealth == 0
 
-player = entity(20)
-boss = entity(5)
+def battle():
+    player = entity(20)
+    boss = entity(5)
 
-startDeck(20)
-while not deckEmpty() and not player.isDead() and not boss.isDead():
-    print("Player")
-    print(player)
-    print("----")
-    print("Boss")
-    print(boss)
-    print("----")
-    score = testCard() # 0, 1, 2, or 3 depending on how well player knows card 
-    if score > 1:
-        score -= 1
-        boss.damage(score) # 1 or 2 dmg
+    startDeck(20)
+    while not deckEmpty() and not player.isDead() and not boss.isDead():
+        print("Player")
+        print(player)
+        print("----")
+        print("Boss")
+        print(boss)
+        print("----")
+        score = testCard() # 0, 1, 2, or 3 depending on how well player knows card 
+        if score > 1:
+            score -= 1
+            boss.damage(score) # 1 or 2 dmg
+        else:
+            score += 1
+            player.damage(score) # 1 or 2 dmg
+
+    if player.isDead():
+        print("You died :(")
+    elif boss.isDead():
+        print("You win! :)")
     else:
-        score += 1
-        player.damage(score) # 1 or 2 dmg
-
-if player.isDead():
-    print("You died :(")
-elif boss.isDead():
-    print("You win! :)")
-else:
-    print("It's a tie?")
+        print("It's a tie?")
