@@ -31,36 +31,35 @@ def testCard():
     #print("Question: ",self.__front)
     #input("Answer: ")
     pygame.event.clear()
-    while True:
-        event = pygame.event.wait()
-        if event.type == QUIT:
-            pygame.quit()
-        elif event.type == KEYDOWN:
-            match chr(event.key):
-                case 'q':
-                    end = pygame.time.get_ticks() + 1500
-                    while pygame.time.get_ticks() < end:
-                        game.pygameText(f"Answer: {back}", 5, 50)
-                    while pygame.time.get_ticks() < end:
-                        game.pygameText(f"From 0-3, how accurate was your answer?", 50, 100, "0 being incorrect & 3 being correct,", 5, 250)
-                case _: pass
-            break
+    
+    event = pygame.event.wait()
+    if event.type == QUIT:
+        pygame.quit()
+    elif event.type == KEYDOWN:
+        match chr(event.key):
+            case 'q':
+                end = pygame.time.get_ticks() + 1500
+                while pygame.time.get_ticks() < end:
+                    game.pygameText(f"Answer: {back}", 5, 50)
+                end = pygame.time.get_ticks() + 1500
+                while pygame.time.get_ticks() < end:
+                    game.pygameText(f"From 0-3, how accurate was your answer?", 50, 100, "0 being incorrect & 3 being correct,", 5, 250)
+                
+            case _: pass
+            
     score = 0
     pygame.event.clear()
-    while True:
-        event = pygame.event.wait()
-        if event.type == QUIT:
-            pygame.quit()
-        elif event.type == KEYDOWN:
-            match chr(event.key):
-                case '0','1','2','3':
-                    score = int(chr(event.key))
-                case 'r': 
-                    end = pygame.time.get_ticks() + 1500
-                    while pygame.time.get_ticks() < end:
-                        game.pygameText(f"From 0-3, how accurate was your answer?", 50, 50, "with 0 being fully incorrect and 3 being fully correct,", 50, 250)
-                case _: pass
-            break
+    event = pygame.event.wait()
+    if event.type == QUIT:
+        pygame.quit()
+    elif event.type == KEYDOWN:
+        print(event.key)
+        match event.key:
+            case 48|49| 50| 51:
+                score = int(chr(event.key))
+                #break
+            case _: pass
+        #break
     #score = input() # actually do this thru pygame
     useCard(card, score) # sends card back to flashcard_algorithm with new score to shuffle it back in and update values
     return score
