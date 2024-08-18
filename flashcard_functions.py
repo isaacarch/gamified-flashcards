@@ -28,7 +28,7 @@ class flashcard:
             score = input("Please enter 0, 1, 2, or 3: ")
         self.change_score(int(score))
         self.__last_seen = datetime.now()
-        return score
+        return int(score)
     def get_atts_for_db(self):
         return (self.__front, self.__back, self.__score, str(self.__last_seen))
     def get_score_time(self):
