@@ -1,5 +1,6 @@
 from datetime import datetime
 from flashcard_database import uploadCard, downloadCards, updateScoreTime
+
 # Scores:
 # 0 -- no knowledge 
 # 1 -- little knowledge 
@@ -11,7 +12,7 @@ from flashcard_database import uploadCard, downloadCards, updateScoreTime
 flashcardsArr = []
 
 # flashcard class
-'''class flashcard:
+class flashcard:
     def __init__(self, front, back, score, time):
         self.__front = front
         self.__back = back
@@ -37,7 +38,7 @@ flashcardsArr = []
         if userScore >= 2:
             self.__score = self.__score + userScore - 1
         else:
-            self.__score = max(self.__score + userScore - 2, 0)'''
+            self.__score = max(self.__score + userScore - 2, 0)
 
 # create a new flashcard from user-entered text
 def newFlashcard():
