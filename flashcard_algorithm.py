@@ -2,7 +2,9 @@ from flashcard_functions import getCards
 from datetime import timedelta, datetime
 import random
 
-flashcards = getCards()
+# global vars
+activeCards = getCards()
+inactiveCards = []
 
 # rounds time to nearest 5 mins
 def roundTime(time):
@@ -30,9 +32,42 @@ def whenToStudy(card):
     (score, last_seen) = card.get_score_time()
     return last_seen + timedelta(minutes = score*10)
 
+def studyingSoon(card):
+    timeUntilStudied = whenToStudy(card) - datetime.now()
+    minutesUntilStudied = timeUntilStudied.total_seconds() / 60
+    return minutesUntilStudied < 20
+
 # sort cards by time to study
 def sortCards():
-    flashcards.sort(key=lambda x: (roundTime(whenToStudy(x)), random.random()))
+    global activeCards
+    global inactiveCards
+    inactiveCards = [card for card in activeCards if not studyingSoon(card)]
+    activeCards = [card for card in activeCards if studyingSoon(card)]
+    activeCards.sort(key=lambda x: (roundTime(whenToStudy(x)), random.random()), reverse=True)
+    return activeCards, inactiveCards
 
-def nextCard():
-    return flashcards.pop(0)
+def testCard():
+    card = activeCards.pop()
+    score = card.test()
+    activeCards.append(card)
+    sortCards()
+    return score
+
+def deckEmpty():
+    return len(activeCards) == 0
+
+def getSortedCards():
+    sortCards()
+    return activeCards
+
+def startDeck(maxSize):
+    global activeCards
+    global inactiveCards
+    if not deckEmpty():
+        overflow = max(0, len(activeCards) - maxSize)
+        actualSize = len(activeCards) - overflow
+        sortCards()
+        inactiveCards.extend(activeCards[0:overflow])
+        activeCards = activeCards[overflow:]
+    else:
+        print("No cards in deck!")
