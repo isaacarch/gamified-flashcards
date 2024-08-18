@@ -1,6 +1,12 @@
-from flashcard_functions import getCards
 from datetime import timedelta, datetime
 import random
+
+# download and instantiate cards
+def getCards():
+    cards = downloadCards()
+    for card in cards:
+        flashcardsArr.append(flashcard(card[0], card[1], card[2], datetime.strptime(card[3], '%Y-%m-%d %H:%M:%S.%f')))
+    return flashcardsArr
 
 # global vars
 activeCards = getCards()
