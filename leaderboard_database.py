@@ -37,16 +37,28 @@ PRIMARY KEY (username)
 '''
     mycursor.execute(command)
 
-def createPrivateTable(mycursor, tableName):
+# the tablename functions as a password bc this is what you enter to upload your score to the table 
+def createPrivateTable(tableName):
+   db = adminLogin()
+   cursor = db.cursor()
    command = f'''
-CREATE TABLE IF NOT EXISTS {}
-
+CREATE TABLE IF NOT EXISTS {tableName}
+(
+username VARCHAR(20),
+score INT,
+PRIMARY KEY (username)
+)
 '''
+   cursor.execute(command)
+   db.commit()
+   cursor.close()
+   db.close()
 
 def fetchUserScore(mycursor, user, board):
     mycursor.execute(f"SELECT score FROM {board} WHERE username =%s", (user,))
     return mycursor.fetchall()
     # returns empty list or [(score)]
+
 
 def addScore(username, score, board):
     db = guestLogin()
@@ -59,8 +71,18 @@ def addScore(username, score, board):
         values = (username, score)
     cursor.execute(command, values)
     db.commit()
+    cursor.close()
+    db.close()
 
-def addScoreToGlobal(username, score):
+def addScoreToGlobal():
+   username = input("Enter your username: ")
+   score = input("Enter your score: ")
    addScore(username, score, "global_board")
 
-addScoreToGlobal("Carol", 100)
+# If private board doesn't exist, it will be created
+def addScoreToPrivate():
+   board = input("Enter the name of your leaderboard: ")
+   createPrivateTable(board)
+   username = input("Enter your username: ")
+   score = input("Enter your score: ")
+   addScore(username, score, board)
