@@ -1,6 +1,7 @@
 import pygame
 from flashcard_database import uploadCard, downloadCards, updateScoreTime
 from pygame.locals import *
+from datetime import datetime
 print("a")
 resolution = (400,300)
 white = (255,255,255)
@@ -27,9 +28,6 @@ class entity:
     def isDead(self):
         return self.currentHealth == 0
 
-from datetime import datetime
-from flashcard_database import uploadCard, downloadCards
-
 # Scores:
 # 0 -- no knowledge 
 # 1 -- little knowledge 
@@ -40,7 +38,7 @@ from flashcard_database import uploadCard, downloadCards
 # when game starts, flashcards will be in an array
 flashcardsArr = []
 
-# flashcard class
+# flashcard class, also unused
 class flashcard:
     def __init__(self, front, back, score, time):
         self.__front = front
@@ -109,7 +107,7 @@ def getCards():
         flashcardsArr.append(flashcard(card[0], card[1], card[2], datetime.strptime(card[3], '%Y-%m-%d %H:%M:%S.%f')))
     return flashcardsArr
 
-
+# the 4 functions above are annoying
 
 class Wall:
     def __init__(self, xPos, YPos, Width, Height) -> None:
