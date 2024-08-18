@@ -1,7 +1,19 @@
-from flashcard_algorithm import startDeck, testCard, deckEmpty
+from flashcard_algorithm import startDeck, getCard, deckEmpty, useCard
 
 # need to get cards with fixed game size
 
+
+def testCard():
+    card = getCard()
+    front = card.getFront()
+    back = card.getBack()
+    # display card front 
+    # user inputs text for what they think is on the back 
+    # display card back 
+    # user enters score 
+    score = input() # actually do this thru pygame
+    useCard(card, score) # sends card back to flashcard_algorithm with new score to shuffle it back in and update values
+    
 class entity:
     def __init__(self, maxHealth):
         self.maxHealth = maxHealth

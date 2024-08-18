@@ -46,12 +46,13 @@ def sortCards():
     activeCards.sort(key=lambda x: (roundTime(whenToStudy(x)), random.random()), reverse=True)
     return activeCards, inactiveCards
 
-def testCard():
-    card = activeCards.pop()
-    score = card.test()
+def getCard():
+    return activeCards.pop()
+
+def useCard(card, score): 
+    card.update_score_date(score)
     activeCards.append(card)
     sortCards()
-    return score
 
 def deckEmpty():
     return len(activeCards) == 0

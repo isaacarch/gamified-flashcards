@@ -20,7 +20,11 @@ class flashcard:
         self.__last_seen = time
     def __str__(self):
         return "Front: "+self.__front+"\nBack: "+self.__back+"\nScore: "+str(self.__score)+"\nLast studied: "+str(self.__last_seen)
-    def test(self):
+    def getFront(self):
+        return self.__front
+    def getBack(self):
+        return self.__front
+    def console_test(self):
         print("Question: ",self.__front)
         input("Answer: ")
         score = input("On a scale of 0 to 3, with 0 being fully incorrect and 3 being fully correct, how accurate was your answer?\n")
@@ -28,8 +32,12 @@ class flashcard:
             score = input("Please enter 0, 1, 2, or 3: ")
         self.change_score(int(score))
         self.__last_seen = datetime.now()
-        updateScoreTime(self) # changes score and last_seen in database for this card
+        updateScoreTime(self)
         return int(score)
+    def update_score_date(self, score): # function that does stuff with the score after the player scores the card 
+        self.change_score(int(score))
+        self.__last_seen = datetime.now()
+        updateScoreTime(self)
     def get_atts_for_db(self):
         return (self.__front, self.__back, self.__score, str(self.__last_seen))
     def get_score_time(self):
@@ -49,13 +57,9 @@ def newFlashcard():
 
 def uploadFlashcards():
     for card in flashcardsArr:
+        print("Uploading...")
         uploadCard(card)
     print("All done :)")
-
-def createFlashcards(num):
-    for i in range(0, num):
-        newFlashcard()
-    uploadFlashcards()
 
 # download and instantiate cards
 def getCards():
