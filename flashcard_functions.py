@@ -24,9 +24,11 @@ class flashcard:
         print("Question: ",self.__front)
         input("Answer: ")
         score = input("On a scale of 0 to 3, with 0 being fully incorrect and 3 being fully correct, how accurate was your answer?\n")
-        while score.isnumeric == False or 0 < int(score) or 3 > int(score):
+        while score.isnumeric() == False or 0 > int(score) or 3 < int(score):
             score = input("Please enter 0, 1, 2, or 3: ")
+        self.change_score(int(score))
         self.__last_seen = datetime.now()
+        return score
     def get_atts_for_db(self):
         return (self.__front, self.__back, self.__score, str(self.__last_seen))
     def get_score_time(self):
