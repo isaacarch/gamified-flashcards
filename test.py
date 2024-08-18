@@ -1,8 +1,8 @@
-import pygame
+import pygame, random
 from flashcard_database import uploadCard, downloadCards, updateScoreTime
+from flashcard_algorithm import startDeck, getCard, deckEmpty, useCard
 from pygame.locals import *
-from datetime import datetime
-print("a")
+#print("a")
 resolution = (400,300)
 white = (255,255,255)
 black = (0,0,0)
@@ -11,9 +11,60 @@ green = (25,227,36)
 levels = 1
 screen = pygame.display.set_mode(resolution)
 
-from flashcard_algorithm import startDeck, testCard, deckEmpty
+# from flashcard_algorithm import startDeck, testCard, deckEmpty
 
 # need to get cards with fixed game size
+
+def testCard():
+    card = getCard()
+    front = str(card.getFront()).encode()
+    back = str(card.getBack()).encode()
+    # display card front 
+    # user inputs text for what they think is on the back 
+    # display card back 
+    # user enters score 
+    s = front
+    print(s)
+    end = pygame.time.get_ticks() + 1500
+    while pygame.time.get_ticks() < end:
+        game.pygameText(s, 50, 100, "Press Q to reveal", 50, 200)
+    #print("Question: ",self.__front)
+    #input("Answer: ")
+    pygame.event.clear()
+    while True:
+        event = pygame.event.wait()
+        if event.type == QUIT:
+            pygame.quit()
+        elif event.type == KEYDOWN:
+            match chr(event.key):
+                case 'q':
+                    end = pygame.time.get_ticks() + 1500
+                    while pygame.time.get_ticks() < end:
+                        game.pygameText(f"Answer: {back}", 5, 50)
+                    while pygame.time.get_ticks() < end:
+                        game.pygameText(f"From 0-3, how accurate was your answer?", 50, 100, "0 being incorrect & 3 being correct,", 5, 250)
+                case _: pass
+            break
+    score = 0
+    pygame.event.clear()
+    while True:
+        event = pygame.event.wait()
+        if event.type == QUIT:
+            pygame.quit()
+        elif event.type == KEYDOWN:
+            match chr(event.key):
+                case '0','1','2','3':
+                    score = int(chr(event.key))
+                case 'r': 
+                    end = pygame.time.get_ticks() + 1500
+                    while pygame.time.get_ticks() < end:
+                        game.pygameText(f"From 0-3, how accurate was your answer?", 50, 50, "with 0 being fully incorrect and 3 being fully correct,", 50, 250)
+                case _: pass
+            break
+    #score = input() # actually do this thru pygame
+    useCard(card, score) # sends card back to flashcard_algorithm with new score to shuffle it back in and update values
+    return score
+    
 
 class entity:
     def __init__(self, maxHealth):
@@ -28,6 +79,8 @@ class entity:
     def isDead(self):
         return self.currentHealth == 0
 
+from datetime import datetime, timedelta
+
 # Scores:
 # 0 -- no knowledge 
 # 1 -- little knowledge 
@@ -38,7 +91,7 @@ class entity:
 # when game starts, flashcards will be in an array
 flashcardsArr = []
 
-# flashcard class, also unused
+# flashcard class
 class flashcard:
     def __init__(self, front, back, score, time):
         self.__front = front
@@ -48,21 +101,27 @@ class flashcard:
     def __str__(self):
         return "Front: "+self.__front+"\nBack: "+self.__back+"\nScore: "+str(self.__score)+"\nLast studied: "+str(self.__last_seen)
     def test(self):
-        game.pygameText(f"Question: {self.__front}", 50, 50)
+        end = pygame.time.get_ticks() + 1500
+        while pygame.time.get_ticks() < end:
+            game.pygameText(f"Question: {self.__front}", 50, 50)
         #print("Question: ",self.__front)
         #input("Answer: ")
-        game.pygameText(f"From 0-3, how accurate was your answer?", 50, 50, "with 0 being fully incorrect and 3 being fully correct,", 50, 250)
+        end = pygame.time.get_ticks() + 1500
+        while pygame.time.get_ticks() < end:
+            game.pygameText("From 0-3, how accurate was your answer?", 50, 50, "with 0 being fully incorrect and 3 being fully correct,", 50, 250)
         pygame.event.clear()
         while True:
             event = pygame.event.wait()
             if event.type == QUIT:
                 pygame.quit()
-                sys.exit()
             elif event.type == KEYDOWN:
                 match chr(event.key):
                     case '0','1','2','3':
                         score = int(chr(event.key))
-                    case 'r': game.pygameText(f"From 0-3, how accurate was your answer?", 50, 50, "with 0 being fully incorrect and 3 being fully correct,", 50, 250)
+                    case 'r': 
+                        end = pygame.time.get_ticks() + 1500
+                        while pygame.time.get_ticks() < end:
+                            game.pygameText(f"From 0-3, how accurate was your answer?", 50, 50, "with 0 being fully incorrect and 3 being fully correct,", 50, 250)
                     case _: pass
                 break
                     
@@ -106,8 +165,6 @@ def getCards():
     for card in cards:
         flashcardsArr.append(flashcard(card[0], card[1], card[2], datetime.strptime(card[3], '%Y-%m-%d %H:%M:%S.%f')))
     return flashcardsArr
-
-# the 4 functions above are annoying
 
 class Wall:
     def __init__(self, xPos, YPos, Width, Height) -> None:
@@ -204,7 +261,7 @@ class Text:
         self.string = s
 
     def draw(self, surface):
-        f = pygame.font.Font(pygame.font.get_default_font(), 36)
+        f = pygame.font.Font("Arial", 36)
         
         # print the text
         end = pygame.time.get_ticks() + 1500
@@ -218,23 +275,21 @@ class Text:
 
 class game(): # main game loop
     def __init__(self):
-        pygame.init()
-        pygame.font.init()
-        self.screen = pygame.display.set_mode(resolution)
+        
         self.clock = pygame.time.Clock()
         self.gameObjects = []
         # maze 1
         self.gameObjects.append(Player(20, 30, 30))
         self.gameObjects.append(Wall(60, 0, 30, 180))
-        self.gameObjects.append(Wall(60, 170, 100, 30))
-        self.gameObjects.append(Wall(230, 220, 100, 30))
-        self.gameObjects.append(Wall(140, 50, 30, 150))
-        self.gameObjects.append(Wall(310, 130, 100, 30))
-        self.gameObjects.append(Wall(230, 200, 30, 150))
-        self.gameObjects.append(Wall(60, 170, 30, 80))
-        self.gameObjects.append(Wall(140, 260, 30, 150))
-        self.gameObjects.append(Wall(230, 50, 30, 180))
-        self.gameObjects.append(Wall(230, 50, 100, 30))
+        #self.gameObjects.append(Wall(60, 170, 100, 30))
+        #self.gameObjects.append(Wall(230, 220, 100, 30))
+        #self.gameObjects.append(Wall(140, 50, 30, 150))
+        #self.gameObjects.append(Wall(310, 130, 100, 30))
+        #self.gameObjects.append(Wall(230, 200, 30, 150))
+        #self.gameObjects.append(Wall(60, 170, 30, 80))
+        #self.gameObjects.append(Wall(140, 260, 30, 150))
+        #self.gameObjects.append(Wall(230, 50, 30, 180))
+        #self.gameObjects.append(Wall(230, 50, 100, 30))
         #self.gameObjects.append(Ball())
         #self.gameObjects.append(Ball(250))
     
@@ -264,15 +319,16 @@ class game(): # main game loop
 
     def run(self):
         while True:
+            global screen
             self.handleEvents()
             currentlevel = 1
             for gameObj in self.gameObjects:
                 gameObj.update(self.gameObjects)
 
-            self.screen.fill(white)
+            screen.fill(white)
 
             for gameObj in self.gameObjects:
-                gameObj.draw(self.screen)
+                gameObj.draw(screen)
 
             global levels, objects
             if levels > currentlevel:
@@ -287,7 +343,7 @@ class game(): # main game loop
                         levels -= 0.5
                     case 0: 
                         while pygame.time.get_ticks() < end:
-                            self.pygameText("It's a tie? Make more flashcards!", 100,150)
+                            self.pygameText("It's a tie?", 100,150, " Make more flashcards!", 100, 250)
                         levels -= 0.5
                     case 1: 
                         while pygame.time.get_ticks() < end:
@@ -299,19 +355,21 @@ class game(): # main game loop
             self.clock.tick(60)
             pygame.display.flip()
     
-    def pygameText(self, s = '', xPos = 0, yPos = 0, t = '', xPos2 = 0, yPos2 = 0):
-        
-        f = pygame.font.Font(pygame.font.get_default_font(), 25)
+    def pygameText(s = '', xPos = 100, yPos = 100, t = '', xPos2 = 100, yPos2 = 100):
+        #print(type(str(s)))
+        global screen
+        f = pygame.font.Font(None, 25)
         screen.fill(white)
         # print the text
-        end = pygame.time.get_ticks() + 1500
-        text_surface = f.render(s, True, black)
-        text2 = f.render(t, True, black)
-        while pygame.time.get_ticks() < end:
-            self.screen.blit(text_surface, dest=(xPos,yPos))
-            self.screen.blit(text2, dest=(xPos2,yPos2))
-            pygame.display.flip()
-        screen.fill(white)
+        #end = pygame.time.get_ticks() + 1500
+        text_surface = f.render(str(s), True, black)
+        text2 = f.render(str(t), True, black)
+        #while pygame.time.get_ticks() < end:
+        #print((xPos, yPos))
+        screen.blit(text_surface, (xPos,yPos))
+        screen.blit(text2, (xPos2,yPos2))
+        pygame.display.flip()
+        #screen.fill(white)
 
     def battle(self):
         player = entity(20)
@@ -321,7 +379,7 @@ class game(): # main game loop
         while not deckEmpty() and not player.isDead() and not boss.isDead():
             #print("Player")
             #print(player) # show player health
-            self.pygameText(f"Player {player}",100,100, f"Boss {boss}", 100, 200)
+            game.pygameText(f"Player {player}",100,100, f"Boss {boss}", 100, 200)
             #print("----")
             #print("Boss") # show boss health
             #print(boss)
@@ -354,6 +412,9 @@ objects = [[Player(20, 30, 30)], #level 1.5 aka battle 1
            [Player(20, 30, 30)], #battle 3
            [] #end screen?
 ]
-ends = [(400,300,25),(400,300,25),(400,300,25),(400,300,25),(200,150,10),(400,300,50)] # (x,y,distance)
+ends = [(400,300,25),(400,300,25),(400,300,25),(400,300,25),(400,300,25),(400,300,25)] # (x,y,distance)
 starts = [(30,30),(30,30),(30,30),(30,30),(30,30),(100,150)]
+pygame.init()
+pygame.font.init()
+screen = pygame.display.set_mode(resolution)
 game().run()

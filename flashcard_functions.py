@@ -23,7 +23,7 @@ class flashcard:
     def getFront(self):
         return self.__front
     def getBack(self):
-        return self.__front
+        return self.__back
     def console_test(self):
         print("Question: ",self.__front)
         input("Answer: ")
