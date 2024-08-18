@@ -38,5 +38,3 @@ def addName(username, score):
         cursor.execute("INSERT INTO globalBoard VALUES (?,?)",(username, score,))
     conn.commit()
     conn.close()
-
-addName("Bob", 30)
