@@ -1,4 +1,4 @@
-import pygame
+import pygame,battle_loop
 from pygame.locals import *
 print("a")
 resolution = (400,300)
@@ -107,15 +107,15 @@ class game(): # main game loop
         self.gameObjects = []
         self.gameObjects.append(Player(20, 30, 30))
         self.gameObjects.append(Wall(60, 0, 30, 180))
-        self.gameObjects.append(Wall(60, 170, 100, 30))
-        self.gameObjects.append(Wall(230, 220, 100, 30))
-        self.gameObjects.append(Wall(140, 50, 30, 150))
-        self.gameObjects.append(Wall(310, 130, 100, 30))
-        self.gameObjects.append(Wall(230, 200, 30, 150))
-        self.gameObjects.append(Wall(60, 170, 30, 80))
-        self.gameObjects.append(Wall(140, 260, 30, 150))
-        self.gameObjects.append(Wall(230, 50, 30, 180))
-        self.gameObjects.append(Wall(230, 50, 100, 30))
+        #self.gameObjects.append(Wall(60, 170, 100, 30))
+        #self.gameObjects.append(Wall(230, 220, 100, 30))
+        #self.gameObjects.append(Wall(140, 50, 30, 150))
+        #self.gameObjects.append(Wall(310, 130, 100, 30))
+        #self.gameObjects.append(Wall(230, 200, 30, 150))
+        #self.gameObjects.append(Wall(60, 170, 30, 80))
+        #self.gameObjects.append(Wall(140, 260, 30, 150))
+        #self.gameObjects.append(Wall(230, 50, 30, 180))
+        #self.gameObjects.append(Wall(230, 50, 100, 30))
         #self.gameObjects.append(Ball())
         #self.gameObjects.append(Ball(250))
     
@@ -146,12 +146,21 @@ class game(): # main game loop
             if levels > currentlevel:
                 currentlevel += 0.5
                 self.newlevel(levels, objects)
+            if (levels % 1 == 0.5):
+                battle_loop.battle()
 
             self.clock.tick(60)
             pygame.display.flip()
+    
 
 
-objects = [[Player(20, 30, 30),Wall(70, 0, 200, 30)],[Player(20, 100, 150),Ball(200)],[Player(20, 100, 150)],[]]
-ends = [(400,300,25),(0,0,50),(200,150,10),(400,300,50)] # (x,y,distance)
-starts = [(30,30),(100,150),(100,150)]
+objects = [[], #level 1.5 aka battle 1
+           [Player(20, 30, 30),Wall(60, 0, 30, 200),Wall(145, 60, 30, 300),Wall(230, 0, 30, 200),Wall(320, 60, 30, 300)], #level 2 puzzle
+           [Player(20, 100, 150),Ball(200)], #battle 2
+           [Player(20, 100, 150), ], # puzzle 3
+           [], #battle 3
+           [] #end screen?
+]
+ends = [(400,300,25),(400,300,25),(200,150,10),(400,300,50)] # (x,y,distance)
+starts = [(30,30),(30,30),(100,150)]
 game().run()
