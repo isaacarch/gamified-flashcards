@@ -37,6 +37,12 @@ PRIMARY KEY (username)
 '''
     mycursor.execute(command)
 
+def createPrivateTable(mycursor, tableName):
+   command = f'''
+CREATE TABLE IF NOT EXISTS {}
+
+'''
+
 def fetchUserScore(mycursor, user, board):
     mycursor.execute(f"SELECT score FROM {board} WHERE username =%s", (user,))
     return mycursor.fetchall()
