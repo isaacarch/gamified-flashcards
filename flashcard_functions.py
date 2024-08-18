@@ -1,5 +1,5 @@
 from datetime import datetime
-from flashcard_database import uploadCard, downloadCards
+from flashcard_database import uploadCard, downloadCards, updateScoreTime
 
 # Scores:
 # 0 -- no knowledge 
@@ -28,6 +28,7 @@ class flashcard:
             score = input("Please enter 0, 1, 2, or 3: ")
         self.change_score(int(score))
         self.__last_seen = datetime.now()
+        updateScoreTime(self) # changes score and last_seen in database for this card
         return int(score)
     def get_atts_for_db(self):
         return (self.__front, self.__back, self.__score, str(self.__last_seen))
@@ -48,9 +49,13 @@ def newFlashcard():
 
 def uploadFlashcards():
     for card in flashcardsArr:
-        print("Uploading...")
         uploadCard(card)
     print("All done :)")
+
+def createFlashcards(num):
+    for i in range(0, num):
+        newFlashcard()
+    uploadFlashcards()
 
 # download and instantiate cards
 def getCards():
