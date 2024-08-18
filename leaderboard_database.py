@@ -37,22 +37,52 @@ PRIMARY KEY (username)
 '''
     mycursor.execute(command)
 
-def fetchUserScore(mycursor, user, db):
-    mycursor.execute(f"SELECT score FROM {db} WHERE username =%s", (user,))
+# the tablename functions as a password bc this is what you enter to upload your score to the table 
+def createPrivateTable(tableName):
+   db = adminLogin()
+   cursor = db.cursor()
+   command = f'''
+CREATE TABLE IF NOT EXISTS {tableName}
+(
+username VARCHAR(20),
+score INT,
+PRIMARY KEY (username)
+)
+'''
+   cursor.execute(command)
+   db.commit()
+   cursor.close()
+   db.close()
+
+def fetchUserScore(mycursor, user, board):
+    mycursor.execute(f"SELECT score FROM {board} WHERE username =%s", (user,))
     return mycursor.fetchall()
     # returns empty list or [(score)]
 
-def addScore(mycursor, score, db):
-    username = input("Enter your username: ")
-    if fetchUserScore(mycursor, username, db): # executes if not empty i.e.: user already exists in db
-        command = f"UPDATE {db} SET score =%s WHERE username =%s"
+
+def addScore(username, score, board):
+    db = guestLogin()
+    cursor = db.cursor()
+    if fetchUserScore(cursor, username, board): # executes if not empty i.e.: user already exists in db
+        command = f"UPDATE {board} SET score =%s WHERE username =%s"
         values = (score, username)
     else:
-        command = f"INSERT INTO {db} (username, score) VALUES (%s, %s)"
+        command = f"INSERT INTO {board} (username, score) VALUES (%s, %s)"
         values = (username, score)
-    mycursor.execute(command, values)
+    cursor.execute(command, values)
+    db.commit()
+    cursor.close()
+    db.close()
 
-db = guestLogin()
-cursor = db.cursor()
-addScore(cursor, 10, "global_board")
-db.commit()
+def addScoreToGlobal():
+   username = input("Enter your username: ")
+   score = input("Enter your score: ")
+   addScore(username, score, "global_board")
+
+# If private board doesn't exist, it will be created
+def addScoreToPrivate():
+   board = input("Enter the name of your leaderboard: ")
+   createPrivateTable(board)
+   username = input("Enter your username: ")
+   score = input("Enter your score: ")
+   addScore(username, score, board)
