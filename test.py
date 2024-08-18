@@ -43,7 +43,7 @@ def testCard():
                     game.pygameText(f"Answer: {back}", 5, 50)
                 end = pygame.time.get_ticks() + 1500
                 while pygame.time.get_ticks() < end:
-                    game.pygameText(f"From 0-3, how accurate was your answer?", 50, 100, "0 being incorrect & 3 being correct,", 5, 250)
+                    game.pygameText(f"From 0-3, how accurate was your answer?", 50, 100, "0 being incorrect & 3 being correct,", 50, 250)
                 
             case _: pass
             
@@ -139,7 +139,6 @@ class flashcard:
             self.__score = self.__score + userScore - 1
         else:
             self.__score = max(self.__score + userScore - 2, 0)
-
 
 # create a new flashcard from user-entered text
 def newFlashcard():
@@ -280,15 +279,15 @@ class game(): # main game loop
         # maze 1
         self.gameObjects.append(Player(20, 30, 30))
         self.gameObjects.append(Wall(60, 0, 30, 180))
-        #self.gameObjects.append(Wall(60, 170, 100, 30))
-        #self.gameObjects.append(Wall(230, 220, 100, 30))
-        #self.gameObjects.append(Wall(140, 50, 30, 150))
-        #self.gameObjects.append(Wall(310, 130, 100, 30))
-        #self.gameObjects.append(Wall(230, 200, 30, 150))
-        #self.gameObjects.append(Wall(60, 170, 30, 80))
-        #self.gameObjects.append(Wall(140, 260, 30, 150))
-        #self.gameObjects.append(Wall(230, 50, 30, 180))
-        #self.gameObjects.append(Wall(230, 50, 100, 30))
+        self.gameObjects.append(Wall(60, 170, 100, 30))
+        self.gameObjects.append(Wall(230, 220, 100, 30))
+        self.gameObjects.append(Wall(140, 50, 30, 150))
+        self.gameObjects.append(Wall(310, 130, 100, 30))
+        self.gameObjects.append(Wall(230, 200, 30, 150))
+        self.gameObjects.append(Wall(60, 170, 30, 80))
+        self.gameObjects.append(Wall(140, 260, 30, 150))
+        self.gameObjects.append(Wall(230, 50, 30, 180))
+        self.gameObjects.append(Wall(230, 50, 100, 30))
         #self.gameObjects.append(Ball())
         #self.gameObjects.append(Ball(250))
     
