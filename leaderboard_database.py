@@ -37,21 +37,24 @@ PRIMARY KEY (username)
 '''
     mycursor.execute(command)
 
-def fetchUserScore(mycursor, user):
-    mycursor.execute("SELECT score FROM global_board WHERE username =%s", (user,))
+def fetchUserScore(mycursor, user, board):
+    mycursor.execute(f"SELECT score FROM {board} WHERE username =%s", (user,))
     return mycursor.fetchall()
     # returns empty list or [(score)]
 
-def addScore(username, score):
+def addScore(username, score, board):
     db = guestLogin()
     cursor = db.cursor()
-    if fetchUserScore(cursor, username): # executes if not empty i.e.: user already exists in db
-        command = "UPDATE global_board SET score =%s WHERE username =%s"
+    if fetchUserScore(cursor, username, board): # executes if not empty i.e.: user already exists in db
+        command = f"UPDATE {board} SET score =%s WHERE username =%s"
         values = (score, username)
     else:
-        command = "INSERT INTO global_board (username, score) VALUES (%s, %s)"
+        command = f"INSERT INTO {board} (username, score) VALUES (%s, %s)"
         values = (username, score)
     cursor.execute(command, values)
     db.commit()
 
-addScore("Bob", 40)
+def addScoreToGlobal(username, score):
+   addScore(username, score, "global_board")
+
+addScoreToGlobal("Carol", 100)
